@@ -1,0 +1,72 @@
+﻿@model decimal?
+
+@{
+    ViewBag.Title = "Мой баланс";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Мой баланс</h4>
+                </div>
+                <div class="card-body text-center">
+                    <h1 class="text-success mb-4">@(Model?.ToString("C2") ?? "0.00")</h1>
+
+                    <div class="mt-4">
+                        <h5>Пополнить баланс</h5>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">$</span>
+                            <input type="number" id="amount" class="form-control" placeholder="Сумма" min="1" step="0.01" value="100">
+                            <button class="btn btn-success" onclick="addMoney()">Пополнить</button>
+                        </div>
+                        <small class="text-muted">После пополнения вы сможете покупать криптовалюту</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+    function addMoney() {
+        var amount = parseFloat($('#amount').val());
+
+        if (amount > 0) {
+            var btn = $('button.btn-success');
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Загрузка...');
+
+            var token = $('input[name="__RequestVerificationToken"]').val();
+
+            $.ajax({
+                url: '@Url.Action("AddMoney", "Balance")',
+                type: 'POST',
+                data: {
+                    amount: amount,
+                    __RequestVerificationToken: token
+                },
+                success: function(data) {
+                    if (data.success) {
+                        alert(data.message);
+                        $('h1.text-success').text('$' + data.newBalance.toFixed(2));
+                        $('#amount').val('');
+                    } else {
+                        alert(data.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                    alert('Ошибка сети: ' + error);
+                },
+                complete: function() {
+                    btn.prop('disabled', false).text('Пополнить');
+                }
+            });
+        } else {
+            alert('Введите сумму больше 0');
+        }
+    }
+    </script>
+}

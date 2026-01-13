@@ -1,0 +1,483 @@
+﻿@@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Tuffy:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+:root {
+    --primary: #7c3aed;
+    --primary-dark: #6d28d9;
+    --success: #10b981;
+    --danger: #ef4444;
+    --dark-bg: #0c0c0c;
+    --card-bg: #1a1a1a;
+    --card-border: #2d2d2d;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+}
+
+body {
+    background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a1a 50%, var(--dark-bg) 100%);
+    font-family: "Fira Sans", sans-serif;
+    min-height: 100vh;
+    color: var(--text-primary);
+    padding-top: 20px;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.card-custom {
+    background: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.header-section {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--card-border);
+    margin-bottom: 24px;
+}
+
+.crypto-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.crypto-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.price-change {
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.positive {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success);
+}
+
+.negative {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--danger);
+}
+
+.nav-tabs-custom {
+    border-bottom: 1px solid var(--card-border);
+}
+
+.nav-tabs-custom .nav-link {
+    color: var(--text-secondary);
+    border: none;
+    padding: 12px 24px;
+    font-weight: 500;
+}
+
+.nav-tabs-custom .nav-link.active {
+    color: var(--primary);
+    background: transparent;
+    border-bottom: 2px solid var(--primary);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: rgba(42, 42, 42, 0.5);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--card-border);
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.portfolio-section {
+    margin-bottom: 30px;
+}
+
+.portfolio-balance {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.portfolio-change {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.asset-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.asset-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(42, 42, 42, 0.5);
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.asset-item:hover {
+    background: rgba(42, 42, 42, 0.8) !important;
+    border-color: var(--primary) !important;
+}
+
+.asset-item.active {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 1px var(--primary);
+}
+
+.asset-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.asset-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.asset-name {
+    font-weight: 600;
+}
+
+.asset-symbol {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.asset-value {
+    text-align: right;
+}
+
+.asset-amount {
+    font-weight: 600;
+}
+
+.asset-percentage {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.exchange-section {
+    margin-top: 30px;
+}
+
+.exchange-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.exchange-tab {
+    padding: 8px 16px;
+    background: rgba(42, 42, 42, 0.5);
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.exchange-tab.active {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.swap-container {
+    background: rgba(42, 42, 42, 0.5);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--card-border);
+}
+
+.swap-input {
+    background: rgba(30, 30, 30, 0.8);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.input-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.input-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-field input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 600;
+    width: 70%;
+    outline: none;
+}
+
+.token-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(60, 60, 60, 0.8);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.percentage-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+}
+
+.percentage-btn {
+    background: rgba(60, 60, 60, 0.8);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: var(--text-primary);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.percentage-btn:hover {
+    background: rgba(80, 80, 80, 0.8);
+}
+
+.swap-button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    width: 100%;
+    margin-top: 20px;
+    transition: background 0.2s;
+}
+
+.swap-button:hover {
+    background: var(--primary-dark);
+}
+
+.transaction-info {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--card-border);
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 0.875rem;
+}
+
+.info-label {
+    color: var(--text-secondary);
+}
+
+.crypto-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.crypto-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--card-border);
+}
+
+.crypto-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.crypto-table tr:last-child td {
+    border-bottom: none;
+}
+
+.crypto-table tr:hover {
+    background: rgba(42, 42, 42, 0.5);
+}
+
+.pagination-custom .page-link {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+}
+
+.pagination-custom .page-item.active .page-link {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+.pagination-custom .page-link:hover {
+    background: rgba(42, 42, 42, 0.8);
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.show-more-btn {
+    background: rgba(42, 42, 42, 0.5);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 12px 16px;
+    text-align: center;
+    color: var(--text-primary);
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.show-more-btn:hover {
+    background: rgba(60, 60, 60, 0.5);
+    border-color: var(--primary);
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+#price-chart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    color: #ffffff !important;
+}
+
+.dropdown-menu {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+    display: none;
+    min-width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    background: #1a1a1a;
+    border: 1px solid #2d2d2d;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    margin-top: 8px !important;
+    padding: 0;
+}
+
+.dropdown-menu.show {
+    display: block !important;
+}
+
+.dropdown-search {
+    background: rgba(42, 42, 42, 0.8);
+    padding: 12px;
+    border-bottom: 1px solid #2d2d2d;
+    position: sticky;
+    top: 0;
+    z-index: 10001;
+}
+
+.dropdown-currencies {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.currency-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #2d2d2d;
+    transition: all 0.2s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+.currency-item:hover {
+    background: rgba(42, 42, 42, 0.8) !important;
+    text-decoration: none;
+}
+
+.currency-item:last-child {
+    border-bottom: none;
+}
+
+.input-group-text {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+}
+
+.form-control {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    color: var(--text-primary) !important;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: var(--primary) !important;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}

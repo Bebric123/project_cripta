@@ -1,0 +1,896 @@
+﻿﻿@using project_cripta.Models
+@model List<CryptoModel>
+
+@{
+    ViewBag.Title = "Криптовалюты - Главная";
+
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int perPage = ViewBag.PerPage ?? 20;
+    int totalPages = ViewBag.TotalPages ?? 20;
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Криптовалюты - Главная</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="~/css/profile.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header-section">
+            <div class="crypto-header">
+                <div>
+                    <h1 class="crypto-price">$2,628.43</h1>
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="price-change negative">-3.2%</span>
+                        <span class="text-muted">27/11/2025 • Цена: $2466 • Объем 24ч: $24.48b</span>
+                    </div>
+                </div>
+                <div class="nav-tabs-custom">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">ID</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">TD</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">IM</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">YY</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">All</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Log</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card-custom p-4 mb-4">
+                    <div class="chart-container">
+                        <canvas id="price-chart"></canvas>
+                    </div>
+
+                    <div class="d-flex justify-content-between text-muted mt-2" id="chart-labels">
+                        <span>Sep</span>
+                        <span>Oct</span>
+                        <span>Nov</span>
+                        <span>Dec</span>
+                        <span>Feb</span>
+                        <span>Mar</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4 mb-2">
+                        <span>Цена</span>
+                        <span>Рыночная капитализация ↓</span>
+                    </div>
+                </div>
+
+                <div class="card-custom p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="section-title" id="analytics-title">ETH аналитика</h3>
+                        <a href="#" class="text-primary">Смотреть все</a>
+                    </div>
+
+                    <div class="stats-grid" id="analytics-stats">
+                        <div class="stat-card">
+                            <div class="stat-value positive">$121,638</div>
+                            <div class="stat-label">Stablecoin Market Cap</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value positive">$674b</div>
+                            <div class="stat-label">DeFi Volume</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value positive">104m</div>
+                            <div class="stat-label">Total Holders</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-custom p-4">
+                    <h3 class="section-title">Криптовалюты</h3>
+                    <div class="table-responsive">
+                        <table class="crypto-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Название</th>
+                                    <th class="text-end">Цена (USD)</th>
+                                    <th class="text-end">Изменение 24ч</th>
+                                    <th class="text-end">Рыночная капитализация</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Math.Min(Model.Count, 5); i++)
+                                {
+                                    var crypto = Model[i];
+                                    var changeClass = crypto.PriceChange24h >= 0 ? "positive" : "negative";
+                                    var changeIcon = crypto.PriceChange24h >= 0 ? "↑" : "↓";
+                                    var globalIndex = ((currentPage - 1) * perPage) + i + 1;
+
+                                    <tr>
+                                        <td class="text-muted">@globalIndex</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="asset-icon me-2">
+                                                    @crypto.Symbol.Substring(0, 1)
+                                                </div>
+                                                <div>
+                                                    <div class="asset-name">@crypto.Name</div>
+                                                    <div class="asset-symbol">@crypto.Symbol.ToUpper()</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-end">
+                                            <strong>$@crypto.CurrentPrice.ToString("N2")</strong>
+                                        </td>
+                                        <td class="text-end">
+                                            <span class="@changeClass">
+                                                @if (crypto.PriceChange24h.HasValue)
+                                                {
+                                                    @changeIcon @:$@Math.Abs(crypto.PriceChange24h.Value).ToString("N2")
+                                                }
+                                                else
+                                                {
+                                                    @:"-"
+                                                }
+                                            </span>
+                                        </td>
+                                        <td class="text-end">$@crypto.MarketCap.ToString("N0")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination pagination-custom justify-content-center">
+                            @if (currentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="@Url.Action("Profile", new { page = currentPage - 1, perPage = perPage })">
+                                        ← Назад
+                                    </a>
+                                </li>
+                            }
+
+                            @for (int i = Math.Max(1, currentPage - 2); i <= Math.Min(totalPages, currentPage + 2); i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    <a class="page-link"
+                                       href="@Url.Action("Profile", new { page = i, perPage = perPage })">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+
+                            @if (currentPage < totalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link"
+                                       href="@Url.Action("Profile", new { page = currentPage + 1, perPage = perPage })">
+                                        Вперед →
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card-custom p-4 mb-4">
+                    <h3 class="section-title">Портфель</h3>
+
+                    <div class="portfolio-balance" id="portfolio-total">$0.00</div>
+                    <div class="portfolio-change positive" id="portfolio-change">+0.0%</div>
+
+                    <div class="asset-list mt-4" id="portfolio-assets">
+                        <div class="text-center py-3">
+                            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                            <span class="ms-2 text-muted">Загрузка портфеля...</span>
+                        </div>
+                    </div>
+
+                    <div class="show-more-btn" id="show-more-btn">
+                        <i class="fas fa-chevron-down me-2"></i> Показать еще
+                    </div>
+                </div>
+
+                <div class="card-custom p-4">
+                    <h3 class="section-title">Обмен USDT</h3>
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i> @TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i> @TempData["Error"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("Exchange", "Profile", FormMethod.Post, new { id = "exchange-form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="swap-container">
+                            <div class="swap-input">
+                                <div class="input-header">
+                                    <span>От</span>
+                                    <span>Баланс: <span id="usdt-balance">@(ViewBag.UserBalances?["USDT"]?.ToString("F2") ?? "0.00")</span> USDT</span>
+                                </div>
+                                <div class="input-field">
+                                    <input type="number" step="0.01" name="fromAmount" id="from-amount" value="100" min="0" max="@(ViewBag.UserBalances?["USDT"] ?? 0)">
+                                    <div class="token-selector" style="background: #26a17b;">
+                                        <div class="asset-icon" style="background: #26a17b; width: 24px; height: 24px; font-size: 0.8rem;">T</div>
+                                        <span>USDT</span>
+                                    </div>
+                                </div>
+                                <div class="percentage-buttons">
+                                    <button type="button" class="percentage-btn" data-percent="25">25%</button>
+                                    <button type="button" class="percentage-btn" data-percent="50">50%</button>
+                                    <button type="button" class="percentage-btn" data-percent="75">75%</button>
+                                    <button type="button" class="percentage-btn" data-percent="100">MAX</button>
+                                </div>
+                            </div>
+
+                            <div class="text-center my-3">
+                                <i class="fas fa-arrow-down text-primary"></i>
+                            </div>
+
+                            <div class="swap-input">
+                                <div class="input-header">
+                                    <span>К</span>
+                                    <span>Баланс: <span id="to-balance">@(ViewBag.UserBalances?["ETH"]?.ToString("F6") ?? "0.00")</span> <span id="to-currency-label">ETH</span></span>
+                                </div>
+                                <div class="input-field">
+                                    <input type="number" step="0.000001" id="to-amount" value="0.0394" readonly>
+                                    <span id="calculation-status" style="display: none; position: absolute; left: 10px; color: #999;"></span>
+
+                                    <div class="dropdown">
+                                        <div class="token-selector dropdown-toggle" id="to-currency-selector"
+                                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                             style="background: #627eea; cursor: pointer;">
+                                            <div class="asset-icon" style="background: #627eea; width: 24px; height: 24px; font-size: 0.8rem;">E</div>
+                                            <span id="to-currency">ETH</span>
+                                            <i class="fas fa-chevron-down ms-2"></i>
+                                        </div>
+
+                                        <div class="dropdown-menu crypto-dropdown" aria-labelledby="to-currency-selector"
+                                             style="min-width: 300px; max-height: 400px; overflow-y: auto;">
+                                            <div class="dropdown-search p-2 border-bottom">
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-dark border-dark">
+                                                        <i class="fas fa-search text-muted"></i>
+                                                    </span>
+                                                    <input type="text" id="currency-search" class="form-control bg-dark border-dark text-light"
+                                                           placeholder="Поиск криптовалюты..." style="color: white !important;">
+                                                </div>
+                                            </div>
+
+                                            <div id="currencies-list" class="dropdown-currencies">
+                                                <div class="text-center py-3">
+                                                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                                    <span class="ms-2 text-muted">Загрузка...</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <input type="hidden" name="toCurrency" id="to-currency-hidden" value="eth">
+                                    <input type="hidden" id="to-currency-id" value="ethereum">
+                                </div>
+                            </div>
+
+                            <div class="transaction-info">
+                                <div class="info-row">
+                                    <span class="info-label">Курс обмена</span>
+                                    <span id="exchange-rate">1 USDT = 0.000394 ETH</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Комиссия сети</span>
+                                    <span id="network-fee">$1.00</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Получите</span>
+                                    <span id="received-amount">0.0384 ETH</span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="swap-button" id="swap-button">Обменять</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+$(document).ready(function() {
+    console.log('Document ready - initializing exchange form');
+
+    loadCryptoCurrencies();
+    loadPortfolio();
+
+    $('.percentage-btn').click(function() {
+        var percent = $(this).data('percent');
+        var maxAmount = parseFloat('@(ViewBag.UserBalances?["USDT"] ?? 0)');
+        var amount = percent === 100 ? maxAmount : maxAmount * (percent / 100);
+        $('#from-amount').val(amount.toFixed(2));
+        calculateExchange();
+    });
+
+    $('#from-amount').on('input', calculateExchange);
+
+    $('#currency-search').on('input', function() {
+        var searchTerm = $(this).val().toLowerCase();
+        $('#currencies-list .currency-item').each(function() {
+            var currencyName = $(this).find('.currency-name').text().toLowerCase();
+            var currencySymbol = $(this).find('.currency-symbol').text().toLowerCase();
+            if (currencyName.includes(searchTerm) || currencySymbol.includes(searchTerm)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+    $('#to-currency-selector').click(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Dropdown clicked');
+
+        var dropdown = $(this).closest('.dropdown').find('.dropdown-menu');
+        dropdown.toggleClass('show');
+
+        if (dropdown.hasClass('show')) {
+            setTimeout(function() {
+                $('#currency-search').focus();
+            }, 100);
+        }
+    });
+
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.dropdown').length) {
+            $('.dropdown-menu').removeClass('show');
+        }
+    });
+
+    $(document).on('click', '.currency-item', function() {
+    var symbol = $(this).data('currency');
+    var currencyId = $(this).data('currency-id');
+
+    console.log('Selected currency:', symbol, currencyId);
+
+    var upperSymbol = symbol.toUpperCase();
+    $('#to-currency').text(upperSymbol);
+    $('#to-currency-label').text(upperSymbol);
+
+    $('#to-currency-hidden').val(symbol);
+    $('#to-currency-id').val(currencyId);
+    updateBalanceForCurrency(symbol);
+
+    var color = getCurrencyColor(upperSymbol);
+    var firstLetter = symbol.charAt(0).toUpperCase();
+
+    $('#to-currency-selector').css('background', color);
+    $('#to-currency-selector .asset-icon')
+        .css('background', color)
+        .text(firstLetter);
+
+        $('.dropdown-menu').removeClass('show');
+
+        calculateExchange();
+    });
+
+    function formatBalance(currency, balance) {
+        var numericBalance = parseFloat(balance) || 0;
+
+        var decimals = 6;
+
+        if (currency.match(/usdt|usdc|dai|busd/i)) {
+            decimals = 2; 
+        } else if (currency.match(/btc/i)) {
+            decimals = 8; 
+        } else if (currency.match(/eth|matic|avax|ftm/i)) {
+            decimals = 6; 
+        } else if (currency.match(/xrp|doge|shib/i)) {
+            decimals = 2; 
+        } else {
+            decimals = 4;
+        }
+
+        return numericBalance.toFixed(decimals);
+    }
+
+    function updateBalanceForCurrency(currencySymbol) {
+    $('#to-balance').text('Loading...');
+
+    $.post('@Url.Action("GetBalanceForCurrency", "Profile")', {
+        currency: currencySymbol
+    }, function(data) {
+        if (data.success && data.balance !== undefined) {
+            var formattedBalance = formatBalance(currencySymbol, data.balance);
+            $('#to-balance').text(formattedBalance);
+        } else {
+            $('#to-balance').text('0.00');
+        }
+    }).fail(function() {
+        $('#to-balance').text('Error');
+    });
+}
+
+    function loadCryptoCurrencies() {
+        console.log('Loading cryptocurrencies...');
+        $.post('@Url.Action("GetAvailableCurrencies", "Profile")', { search: '' }, function(data) {
+            console.log('Currencies loaded:', data);
+            var currenciesList = $('#currencies-list');
+            currenciesList.empty();
+
+            if (!data.success || !data.currencies) {
+                currenciesList.html('<div class="text-center py-3 text-muted">Криптовалюты не найдены</div>');
+                return;
+            }
+
+            var mainCurrencies = ['ETH', 'BTC', 'SUI'];
+            var mainItems = data.currencies.filter(c => mainCurrencies.includes(c.symbol));
+            var otherItems = data.currencies.filter(c => !mainCurrencies.includes(c.symbol));
+
+            mainItems.forEach(function(currency) {
+                var item = createCurrencyItem(currency);
+                currenciesList.append(item);
+            });
+
+            if (otherItems.length > 0) {
+                currenciesList.append('<div class="dropdown-divider border-secondary"></div>');
+            }
+
+            otherItems.slice(0, 50).forEach(function(currency) {
+                var item = createCurrencyItem(currency);
+                currenciesList.append(item);
+            });
+        }).fail(function(xhr, status, error) {
+            console.error('Error loading currencies:', error);
+            $('#currencies-list').html('<div class="text-center py-3 text-muted">Ошибка загрузки</div>');
+        });
+    }
+
+    function createCurrencyItem(currency) {
+        var symbol = currency.symbol.toUpperCase();
+        var color = getCurrencyColor(symbol);
+
+        return `
+            <div class="currency-item"
+                 data-currency="${currency.symbol.toLowerCase()}"
+                 data-currency-id="${currency.id}">
+                <div class="asset-icon rounded-circle d-flex align-items-center justify-content-center me-3"
+                     style="width: 32px; height: 32px; font-weight: bold; background: ${color}; color: white;">
+                    ${currency.icon || symbol.charAt(0)}
+                </div>
+                <div class="flex-grow-1">
+                    <div class="currency-symbol fw-bold">${symbol}</div>
+                    <div class="currency-name text-muted small">${currency.name}</div>
+                </div>
+                <div class="text-end">
+                    <div class="currency-price">$${(currency.price || 0).toFixed(2)}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    function getCurrencyColor(symbol) {
+        var colors = {
+            'ETH': '#627eea',
+            'BTC': '#f7931a',
+            'SUI': '#5f63f2',
+            'BNB': '#f3ba2f',
+            'ADA': '#0033ad',
+            'SOL': '#00ffbd',
+            'XRP': '#23292f',
+            'DOT': '#e6007a',
+            'DOGE': '#c2a633',
+            'MATIC': '#8247e5'
+        };
+        return colors[symbol] || '#7c3aed';
+    }
+
+    function calculateExchange() {
+    var fromAmount = parseFloat($('#from-amount').val()) || 0;
+    var toCurrency = $('#to-currency-hidden').val();
+
+    console.log('Calculating exchange:', fromAmount, toCurrency);
+
+    if (fromAmount > 0 && toCurrency) {
+        $('#calculation-status').text('Calculating...').show();
+        $('#to-amount').val('');
+        $('#swap-button').prop('disabled', true).text('Calculating...');
+
+        $.post('@Url.Action("CalculateExchange", "Profile")', {
+            toCurrency: toCurrency,
+            amount: fromAmount
+        }, function(data) {
+            $('#calculation-status').hide();
+
+            if (data.success) {
+                var received = data.receivedAmount;
+                var rate = data.exchangeRate;
+
+                $('#to-amount').val(received);
+                $('#exchange-rate').text(`1 USDT = ${rate} ${$('#to-currency').text()}`);
+                $('#network-fee').text(`$${data.networkFee}`);
+                $('#received-amount').text(`${received} ${$('#to-currency').text()}`);
+
+                if (!data.hasSufficientFunds) {
+                    $('#swap-button').prop('disabled', true)
+                        .removeClass('btn-primary')
+                        .addClass('btn-danger')
+                        .text('Недостаточно средств');
+                } else {
+                    $('#swap-button').prop('disabled', false)
+                        .removeClass('btn-danger')
+                        .addClass('btn-primary')
+                        .text('Обменять');
+                }
+            } else {
+                $('#to-amount').val('0');
+                $('#swap-button').prop('disabled', true).text('Ошибка расчета');
+            }
+        }).fail(function() {
+            $('#calculation-status').hide();
+            $('#to-amount').val('0');
+            $('#swap-button').prop('disabled', true).text('Ошибка сети');
+        });
+    } else {
+        $('#to-amount').val('0');
+        $('#swap-button').prop('disabled', true);
+    }
+}
+
+    calculateExchange();
+});
+    function loadPortfolio() {
+    $('#portfolio-assets').html(`
+        <div class="text-center py-3">
+            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+            <span class="ms-2 text-muted">Загрузка портфеля...</span>
+        </div>
+    `);
+
+    $.post('@Url.Action("GetPortfolioData", "Profile")', function(data) {
+        if (data.success) {
+            updatePortfolioUI(data);
+        } else {
+            $('#portfolio-assets').html(`
+                <div class="text-center py-3 text-muted">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Ошибка загрузки портфеля
+                </div>
+            `);
+        }
+    }).fail(function() {
+        $('#portfolio-assets').html(`
+            <div class="text-center py-3 text-muted">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Ошибка сети
+            </div>
+        `);
+    });
+}
+
+        function updatePortfolioUI(portfolioData) {
+            console.log('Updating portfolio UI:', portfolioData);
+
+            $('#portfolio-total').text('$' + formatMoney(portfolioData.totalValue || 0));
+
+            var totalChange = portfolioData.totalChange || 0;
+            $('#portfolio-change').text((totalChange > 0 ? '+' : '') + totalChange.toFixed(1) + '%')
+                .toggleClass('positive', totalChange > 0)
+                .toggleClass('negative', totalChange < 0);
+
+            var assetsHtml = '';
+
+            if (portfolioData.assets && portfolioData.assets.length > 0) {
+                portfolioData.assets.forEach(function (asset, index) { 
+                    if (!asset) return;
+
+                    var symbol = asset.symbol || 'UNKNOWN';
+                    var name = asset.name || symbol;
+                    var amount = asset.amount || 0;
+                    var value = asset.value || 0;
+                    var color = asset.color || '#7c3aed';
+                    var change24h = asset.change24h || 0;
+                    var percentage = asset.percentage || 0;
+
+                    var changeClass = change24h >= 0 ? 'positive' : 'negative';
+
+                    var shouldHide = index >= 4;
+                    var itemStyle = shouldHide ? 'style="display: none;"' : '';
+
+                    assetsHtml += `
+                <div class="asset-item" ${itemStyle}>
+                    <div class="asset-info">
+                        <div class="asset-icon" style="background: ${color};">${symbol.charAt(0)}</div>
+                        <div>
+                            <div class="asset-name">${name}</div>
+                            <div class="asset-symbol">${percentage.toFixed(2)}%</div>
+                        </div>
+                    </div>
+                    <div class="asset-value">
+                        <div class="asset-amount">$${formatMoney(value)}</div>
+                        <div class="asset-percentage ${changeClass}">
+                            ${formatCryptoAmount(amount, symbol.toLowerCase())} ${symbol}
+                        </div>
+                    </div>
+                </div>
+            `;
+                });
+
+                if (portfolioData.assets.length > 4) {
+                    $('#show-more-btn').show();
+                } else {
+                    $('#show-more-btn').hide();
+                }
+            } else {
+                assetsHtml = `
+            <div class="text-center py-3 text-muted">
+                <i class="fas fa-wallet me-2"></i>
+                Портфель пуст
+            </div>
+        `;
+                $('#show-more-btn').hide();
+            }
+
+            $('#portfolio-assets').html(assetsHtml);
+        }
+        function formatMoney(amount) {
+            if (amount === 0) return '0.00';
+
+            var numericAmount = parseFloat(amount) || 0;
+            return new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(numericAmount);
+        }
+
+        setInterval(function () {
+            loadPortfolio();
+        }, 30000);
+
+        $(document).ajaxSuccess(function (event, xhr, settings) {
+            if (settings.url.includes('Exchange')) {
+                setTimeout(function () {
+                    loadPortfolio();
+                }, 1000);
+            }
+        });
+
+        function formatCryptoAmount(amount, currency) {
+            if (amount === 0) return '0';
+
+            var numericAmount = parseFloat(amount) || 0;
+            if (isNaN(numericAmount)) return '0';
+
+            var amountStr = numericAmount.toString();
+
+            if (amountStr.includes('.')) {
+                amountStr = amountStr.replace(/0+$/, ''); 
+                if (amountStr.endsWith('.')) {
+                    amountStr = amountStr.slice(0, -1);
+                }
+            }
+
+            return amountStr;
+        }
+        $('#show-more-btn').click(function () {
+            var hiddenAssets = $('.asset-item:hidden');
+            if (hiddenAssets.length > 0) {
+                hiddenAssets.show();
+                $(this).html('<i class="fas fa-chevron-up me-2"></i> Показать меньше');
+            } else {
+                $('.asset-item:gt(3)').hide();
+                $(this).html('<i class="fas fa-chevron-down me-2"></i> Показать еще');
+            }
+        });
+
+        $(document).on('click', '.asset-item', function() {
+    var symbol = $(this).find('.asset-name').text().split(' ')[0]; 
+    var assetSymbol = $(this).find('.asset-percentage').text().split(' ')[1];
+            $('.asset-item').removeClass('active');
+            $(this).addClass('active');
+    console.log('Selected asset:', symbol, assetSymbol);
+
+    loadCryptoAnalytics(symbol || assetSymbol);
+});
+
+function loadCryptoAnalytics(cryptoSymbol) {
+    console.log('Loading analytics for:', cryptoSymbol);
+
+    $('.chart-placeholder').html(`
+        <div class="text-center py-4">
+            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+            <span class="ms-2 text-muted">Загрузка данных ${cryptoSymbol}...</span>
+        </div>
+    `);
+
+    $('.section-title').text(`${cryptoSymbol} аналитика`);
+
+    $.post('@Url.Action("GetCryptoAnalytics", "Profile")', {
+        symbol: cryptoSymbol
+    }, function(data) {
+        if (data.success) {
+            updateAnalyticsUI(data, cryptoSymbol);
+        } else {
+            showAnalyticsError(cryptoSymbol, data.error);
+        }
+    }).fail(function() {
+        showAnalyticsError(cryptoSymbol, 'Ошибка сети');
+    });
+        }
+        function updateAnalyticsUI(data, symbol) {
+            console.log('Updating analytics UI:', data);
+
+            $('.section-title').text(`${symbol} аналитика`);
+
+            initPriceChart(symbol, data.historicalData);
+
+            var statsHtml = '';
+            if (data.stats && data.stats.length > 0) {
+                data.stats.forEach(function (stat) {
+                    var isPositive = !stat.value.includes('-');
+                    statsHtml += `
+                <div class="stat-card">
+                    <div class="stat-value ${isPositive ? 'positive' : 'negative'}">${stat.value}</div>
+                    <div class="stat-label">${stat.label}</div>
+                </div>
+            `;
+                });
+            } else {
+                statsHtml = `
+            <div class="stat-card">
+                <div class="stat-value positive">$${formatLargeNumber(data.marketCap)}</div>
+                <div class="stat-label">Market Cap</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value positive">$${formatLargeNumber(data.volume24h)}</div>
+                <div class="stat-label">24h Volume</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value positive">${formatLargeNumber(data.marketCap / 1000)}</div>
+                <div class="stat-label">Total Holders</div>
+            </div>
+        `;
+            }
+
+            $('.stats-grid').html(statsHtml);
+        }
+
+        function showAnalyticsError(symbol, error) {
+            $('.chart-placeholder').html(`
+            <div class="text-center py-4 text-muted">
+                <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                <p>Ошибка загрузки ${symbol}</p>
+                <small>${error}</small>
+            </div>
+        `);
+
+                $('.stats-grid').html(`
+            <div class="stat-card">
+                <div class="stat-value text-muted">N/A</div>
+                <div class="stat-label">Данные недоступны</div>
+            </div>
+        `);
+        }
+
+        function formatLargeNumber(num) {
+            if (num >= 1000000000) {
+                return (num / 1000000000).toFixed(2) + 'b';
+            }
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(2) + 'm';
+            }
+            if (num >= 1000) {
+                return (num / 1000).toFixed(2) + 'k';
+            }
+            return num.toFixed(2);
+        }
+        var priceChart = null;
+
+        function initPriceChart(symbol, historicalData) {
+            var ctx = document.getElementById('price-chart').getContext('2d');
+            $.post('@Url.Action("GetCryptoAnalytics", "Profile")', {
+                symbol: 'ETH'
+            }, function(data) {
+                if (data.success) {
+                    updateCryptoAnalytics('ETH', data);
+                }
+            });
+            if (priceChart) {
+                priceChart.destroy();
+            }
+
+            priceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: historicalData.labels || ['Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+                    datasets: [{
+                        label: `Цена ${symbol}`,
+                        data: historicalData.prices || [100, 120, 90, 150, 130, 180, 160],
+                        borderColor: '#7c3aed',
+                        backgroundColor: 'rgba(124, 58, 237, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#7c3aed',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(26, 26, 26, 0.9)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: '#7c3aed',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: 'rgba(45, 45, 45, 0.5)'
+                            },
+                            ticks: {
+                                color: '#94a3b8'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(45, 45, 45, 0.5)'
+                            },
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: function (value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        mode: 'nearest',
+                        axis: 'x',
+                        intersect: false
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

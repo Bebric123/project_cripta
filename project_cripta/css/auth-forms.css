@@ -1,0 +1,98 @@
+﻿:root {
+    --primary: #7c3aed;
+    --primary-dark: #6d28d9;
+    --success: #10b981;
+    --danger: #ef4444;
+    --dark-bg: #0c0c0c;
+    --card-bg: #1a1a1a;
+    --card-border: #2d2d2d;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+}
+
+body {
+    background: linear-gradient(135deg, var(--dark-bg) 0%, #1a1a1a 50%, var(--dark-bg) 100%) !important;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.auth-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+}
+
+.auth-form .form-control {
+    background: rgba(42, 42, 42, 0.8) !important;
+    border: 1px solid var(--card-border) !important;
+    color: var(--text-primary) !important;
+}
+
+.auth-form .form-control:focus {
+    background: rgba(42, 42, 42, 0.9) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.25) !important;
+    color: var(--text-primary) !important;
+}
+
+.auth-form .form-control::placeholder {
+    color: var(--text-secondary) !important;
+}
+
+.auth-form .form-check-input {
+    background-color: rgba(42, 42, 42, 0.8);
+    border: 1px solid var(--card-border);
+}
+
+.auth-form .form-check-input:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.auth-btn {
+    background: #9370DB !important;
+    border: none !important;
+    padding: 12px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s !important;
+    color: white !important;
+}
+
+.auth-btn:hover {
+    background: #6A5ACD !important;
+    transform: translateY(-1px) !important;
+    color: white !important;
+}
+
+.auth-link {
+    color: #9370DB !important;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-link:hover {
+    color: #6A5ACD !important;
+    text-decoration: underline;
+}
+
+.field-validation-error {
+    color: var(--danger);
+    font-size: 0.875rem;
+    margin-top: 4px;
+    display: block;
+}
+
+.input-validation-error {
+    border-color: var(--danger) !important;
+}

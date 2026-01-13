@@ -1,0 +1,135 @@
+﻿@using project_cripta.Models
+@model List<CryptoModel>
+
+@{
+    ViewBag.Title = "Криптовалюты - Главная";
+
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int perPage = ViewBag.PerPage ?? 20;
+    int totalPages = ViewBag.TotalPages ?? 20;
+}
+<link rel="stylesheet" href="~/css/home.css">
+<style>
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="card-custom">
+        <div class="section-header">
+            <h2 class="section-title">Криптовалюты</h2>
+            <div class="last-updated text-muted">
+                Данные на @DateTime.Now.ToString("dd.MM.yyyy HH:mm")
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="crypto-table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="text-center">#</th>
+                        <th scope="col">Название</th>
+                        <th scope="col" class="text-end">Цена (USD)</th>
+                        <th scope="col" class="text-end">Изменение 24ч</th>
+                        <th scope="col" class="text-end">Изменение % 24ч</th>
+                        <th scope="col" class="text-end">Рыночная капитализация</th>
+                        <th scope="col" class="text-end">Объем 24ч</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        var crypto = Model[i];
+                        var changeClass = crypto.PriceChange24h >= 0 ? "text-success" : "text-danger";
+                        var changeIcon = crypto.PriceChange24h >= 0 ? "↑" : "↓";
+                        var globalIndex = ((currentPage - 1) * perPage) + i + 1;
+
+                        <tr>
+                            <td class="text-center text-muted">@globalIndex</td>
+                            <td>
+                                <strong class="text-white">@crypto.Name</strong>
+                                <span class="text-muted text-uppercase small">(@crypto.Symbol)</span>
+                            </td>
+                            <td class="text-end">
+                                <strong class="text-white">$@crypto.CurrentPrice.ToString("N2")</strong>
+                            </td>
+                            <td class="text-end @changeClass fw-bold">
+                                @if (crypto.PriceChange24h.HasValue)
+                                {
+                                    @changeIcon @:$@Math.Abs(crypto.PriceChange24h.Value).ToString("N2")
+                                }
+                                else
+                                {
+                                    @:"-"
+                                }
+                            </td>
+                            <td class="text-end @changeClass fw-bold">
+                                @if (crypto.PriceChangePercentage24h.HasValue)
+                                {
+                                    @changeIcon @:@Math.Abs(crypto.PriceChangePercentage24h.Value).ToString("N2")%
+                                }
+                                else
+                                {
+                                    @:"-"
+                                }
+                            </td>
+                            <td class="text-end text-white">$@crypto.MarketCap.ToString("N0")</td>
+                            <td class="text-end text-white">$@crypto.TotalVolume.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="p-4 border-top border-card">
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-custom justify-content-center">
+                    @if (currentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="@Url.Action("Index", new { page = currentPage - 1, perPage = perPage })">
+                                ← Назад
+                            </a>
+                        </li>
+                    }
+
+                    @for (int i = Math.Max(1, currentPage - 2); i <= Math.Min(totalPages, currentPage + 2); i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
+                            <a class="page-link"
+                               href="@Url.Action("Index", new { page = i, perPage = perPage })">
+                                @i
+                            </a>
+                        </li>
+                    }
+
+                    @if (currentPage < totalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="@Url.Action("Index", new { page = currentPage + 1, perPage = perPage })">
+                                Вперед →
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    Данные предоставлены CoinGecko API • Страница @currentPage из @totalPages
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
